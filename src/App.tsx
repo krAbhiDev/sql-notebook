@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import reactLogo from "./assets/react.svg";
 import { invoke } from "@tauri-apps/api/tauri";
-import "./App.css";
 import Database from "tauri-plugin-sql-api";
 function useDb(path: string) {
   const [db, setDb] = useState<Database>();
@@ -116,10 +115,14 @@ function App() {
   >();
 
   function isSqlExecuteType(data: any): data is SqlExecuteType {
-    return typeof data =="object" && data.lastInsertId != undefined && data.rowsAffected != undefined;
+    return (
+      typeof data == "object" &&
+      data.lastInsertId != undefined &&
+      data.rowsAffected != undefined
+    );
   }
   function isSqlTableType(data: any): data is SqlTableType {
-    return typeof data =="object" && Object.keys(data).length > 0;
+    return typeof data == "object" && Object.keys(data).length > 0;
   }
   function isString(data: any): data is string {
     return typeof data == "string";
@@ -137,14 +140,26 @@ function App() {
   }
 
   return (
-    <div>
-      <div>
-        <button onClick={select}>select</button>
-        <button onClick={insert}>insert</button>
-        <button onClick={descTable}>descTable</button>
-        <button onClick={delete_}>delete</button>
-        <button onClick={allTable}>allTable</button>
-        <button onClick={createTable}>createTable</button>
+    <div className="p-2">
+      <div className=" flex space-x-1">
+        <button className="btn-primary" onClick={select}>
+          select
+        </button>
+        <button className="btn-primary" onClick={insert}>
+          insert
+        </button>
+        <button className="btn-primary" onClick={descTable}>
+          descTable
+        </button>
+        <button className="btn-primary" onClick={delete_}>
+          delete
+        </button>
+        <button className="btn-primary" onClick={allTable}>
+          allTable
+        </button>
+        <button className="btn-primary" onClick={createTable}>
+          createTable
+        </button>
       </div>
       <div>
         <ResultView data={table} />
@@ -163,7 +178,7 @@ function SqlTable(props: { data: SqlTableType }) {
   //create html table from tableArray
   //if object is empty show
   return (
-    <div>
+    <div className="max-h-[200px] overflow-y-auto ">
       <table>
         <thead>
           <tr>
@@ -173,12 +188,12 @@ function SqlTable(props: { data: SqlTableType }) {
           </tr>
         </thead>
         <tbody>
-          {Object.keys(props.data).map((key, i) => (
-            <td key={i}>
-              {props.data[key].map((item, j) => (
-                <tr key={j}>{item}</tr>
+          {Object.values(props.data)[0].map((_, i) => (
+            <tr key={i}>
+              {Object.values(props.data).map((item, j) => (
+                <td key={j}>{item[i]}</td>
               ))}
-            </td>
+            </tr>
           ))}
         </tbody>
       </table>
